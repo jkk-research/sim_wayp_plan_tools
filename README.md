@@ -17,13 +17,13 @@ It is assumed that the workspace is `~/ros2_ws/`.
 ```
 cd ~/ros2_ws/src
 git clone https://github.com/jkk-research/wayp_plan_tools
-git clone https://github.com/jkk-research/sim-wayp_plan_tools
+git clone https://github.com/jkk-research/sim_wayp_plan_tools
 ```
 
 ### Build ROS 2 packages
 ```
 cd ~/ros2_ws
-colcon build --packages-select wayp_plan_tools sim-wayp_plan_tools
+colcon build --packages-select wayp_plan_tools sim_wayp_plan_tools
 ```
 
 
