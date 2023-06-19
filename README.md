@@ -67,7 +67,7 @@ ros2 run teleop_twist_keyboard teleop_twist_keyboard --ros-args -r /cmd_vel:=/mo
 
 Use you ROS 2 workspace as `file_dir`:
 ``` r
-ros2 run wayp_plan_tools waypoint_loader --ros-args -p file_name:=sim_waypoints1.csv -p file_dir:=/home/he/ros2_ws/src/sim_wayp_plan_tools/csv
+ros2 run wayp_plan_tools waypoint_loader --ros-args -p file_name:=sim_waypoints1.csv -p file_dir:=/home/he/ros2_ws/src/sim_wayp_plan_tools/csv -r __ns:=/sim1
 ```
 Or simply with default parameters:
 
@@ -78,7 +78,7 @@ ros2 launch sim_wayp_plan_tools waypoint_loader.launch.py
 ## 4. Waypoint to target
 
 ``` r
-ros2 run wayp_plan_tools waypoint_to_target --ros-args -p lookahead_min:=2.5 -p lookahead_max:=4.5 -p mps_alpha:=1.5 -p mps_beta:=3.5 -p waypoint_topic:=sim1/waypointarray
+ros2 run wayp_plan_tools waypoint_to_target --ros-args -p lookahead_min:=2.5 -p lookahead_max:=4.5 -p mps_alpha:=1.5 -p mps_beta:=3.5 -p waypoint_topic:=waypointarray -p tf_frame_id:=base_link -p tf_child_frame_id:=map -r __ns:=/sim1
 ```
 Or simply with default parameters:
 
@@ -97,7 +97,7 @@ There are some options:
 This is a pure pursuit example:
 
 ``` r
-ros2 run wayp_plan_tools single_goal_pursuit --ros-args -p cmd_topic:=sim1/cmd_vel -p wheelbase:=2.789 -p waypoint_topic:=sim1/targetpoints
+ros2 run wayp_plan_tools single_goal_pursuit --ros-args -p cmd_topic:=/model/vehicle_blue/cmd_vel -p wheelbase:=1.0 -p waypoint_topic:=targetpoints -r __ns:=/sim1
 ```
 Or simply with default parameters:
 
@@ -111,3 +111,22 @@ ros2 launch sim_wayp_plan_tools rviz1.launch.py
 ```
 
 
+# Troubleshoot 
+
+Kill `ign gazebo server` if stuck:
+
+``` r
+ps aux | grep ign
+```
+
+``` r
+ab  12345 49.9  1.2 2412624 101608 ?      Sl   08:26  27:20 ign gazebo server
+ab  12346  518  6.6 10583664 528352 ?     Sl   08:26 283:45 ign gazebo gui
+ab  12347  0.0  0.0   9396  2400 pts/2    S+   09:21   0:00 grep --color=auto ign
+```
+
+Once you have identified the PID, use the kill command followed by the PID to terminate the process. For example:
+
+``` r
+kill 12345
+```

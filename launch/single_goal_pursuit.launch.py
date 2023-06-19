@@ -11,7 +11,7 @@ def generate_launch_description():
             output='screen',
             parameters=[
                     {"cmd_topic": "/model/vehicle_blue/cmd_vel"},
-                    {"wheelbase": 1.789},
+                    {"wheelbase": 1.0}, # from the /usr/share/ignition/ignition-gazebo6/worlds/ackermann_steering.sdf file wheel_base parameter
                     {"waypoint_topic": "targetpoints"},
                 ],
         )
