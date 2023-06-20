@@ -8,7 +8,7 @@ def generate_launch_description():
         Node(
             package='ros_gz_bridge',
             executable='parameter_bridge',
-            name='ros_gz_bridge_1',
+            #name='ros_gz_bridge_1',
             arguments=[
                 '/world/ackermann_steering/pose/info@geometry_msgs/msg/PoseArray[ignition.msgs.Pose_V',  
                 '/model/vehicle_blue/cmd_vel@geometry_msgs/msg/Twist]ignition.msgs.Twist',  
@@ -18,7 +18,7 @@ def generate_launch_description():
         Node(
             package='sim_wayp_plan_tools',
             executable='pose_arr_to_tf',
-            name='pose_arr_to_tf1',
+            #name='pose_arr_to_tf1',
             output='screen',
             parameters=[
                 {"pose_topic": "/world/ackermann_steering/pose/info"},

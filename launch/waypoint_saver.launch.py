@@ -12,7 +12,7 @@ def generate_launch_description():
         Node(
             package='wayp_plan_tools',
             executable='waypoint_saver',
-            name='wayp_saver',
+            #name='wayp_saver',
             output='screen',
             namespace='sim1',
             parameters=[

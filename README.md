@@ -110,6 +110,12 @@ ros2 launch sim_wayp_plan_tools single_goal_pursuit.launch.py
 ros2 launch sim_wayp_plan_tools rviz1.launch.py
 ```
 
+# Or run everything with a single command
+
+After `ign gazebo -v 4 -r ackermann_steering.sdf` (terminal 1) and `source ~/ros2_ws/install/local_setup.bash` (terminal 2), run this command (also in terminal 2): 
+``` r
+ros2 launch sim_wayp_plan_tools all_in_once.launch.py
+```
 
 # Troubleshoot 
 

@@ -9,6 +9,8 @@ endif()
 find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(geometry_msgs REQUIRED)
+find_package(nav_msgs REQUIRED)
+find_package(visualization_msgs REQUIRED)
 find_package(tf2 REQUIRED)
 find_package(tf2_msgs REQUIRED)
 find_package(tf2_ros REQUIRED)
@@ -21,6 +23,8 @@ find_package(tf2_geometry_msgs REQUIRED)
 set(ament_dependencies
   rclcpp
   geometry_msgs
+  nav_msgs
+  visualization_msgs
   tf2
   tf2_msgs
   tf2_ros
@@ -33,6 +37,8 @@ include_directories(
 
 add_executable(pose_arr_to_tf src/pose_arr_to_tf.cpp)
 ament_target_dependencies(pose_arr_to_tf  ${ament_dependencies} )
+add_executable(visuals src/visuals.cpp)
+ament_target_dependencies(visuals  ${ament_dependencies} )
 
 # uncomment the following section in order to fill in
 # further dependencies manually.
@@ -56,5 +62,6 @@ install(DIRECTORY
   DESTINATION share/${PROJECT_NAME})
 install(TARGETS
   pose_arr_to_tf
+  visuals
   DESTINATION lib/${PROJECT_NAME})
 ament_package()
