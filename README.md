@@ -9,7 +9,8 @@ Gazebo Fortress ROS 2 simulation for the waypoint and planner tools.
 - ROS 2 Humble: [docs.ros.org/en/humble/Installation.html](https://docs.ros.org/en/humble/Installation.html)
 - Gazebo Fortress: [gazebosim.org/docs/fortress/install_ubuntu](https://gazebosim.org/docs/fortress/install_ubuntu), read more about integration: [gazebosim.org/docs/fortress/ros2_integration](https://gazebosim.org/docs/fortress/ros2_integration)
 - `ros-gz-bridge` install with a single command: `sudo apt install ros-humble-ros-gz-bridge`
-
+- Make sure that [`colcon_cd`](https://docs.ros.org/en/humble/Tutorials/Beginner-Client-Libraries/Colcon-Tutorial.html#setup-colcon-cd) is installed correctly. The csv files are loaded with the help of `colcon_cd`.
+ 
 ## Packages and build
 
 It is assumed that the workspace is `~/ros2_ws/`.
