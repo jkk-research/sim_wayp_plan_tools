@@ -8,6 +8,7 @@ Gazebo Fortress ROS 2 simulation for the waypoint and planner tools.
 # Requirements
 - ROS 2 Humble: [docs.ros.org/en/humble/Installation.html](https://docs.ros.org/en/humble/Installation.html)
 - Gazebo Fortress: [gazebosim.org/docs/fortress/install_ubuntu](https://gazebosim.org/docs/fortress/install_ubuntu), read more about integration: [gazebosim.org/docs/fortress/ros2_integration](https://gazebosim.org/docs/fortress/ros2_integration)
+- `ros-gz-bridge` install with a single command: `sudo apt install ros-humble-ros-gz-bridge`
 
 ## Packages and build
 
