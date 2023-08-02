@@ -69,7 +69,7 @@ ros2 run teleop_twist_keyboard teleop_twist_keyboard --ros-args -r /cmd_vel:=/mo
 
 Use you ROS 2 workspace as `file_dir`:
 ``` r
-ros2 run wayp_plan_tools waypoint_loader --ros-args -p file_name:=sim_waypoints1.csv -p file_dir:=/home/he/ros2_ws/src/sim_wayp_plan_tools/csv -r __ns:=/sim1
+ros2 run wayp_plan_tools waypoint_loader --ros-args -p file_name:=sim_waypoints1.csv -p file_dir:=$HOME/ros2_ws/src/sim_wayp_plan_tools/csv -r __ns:=/sim1
 ```
 Or simply with default parameters:
 
