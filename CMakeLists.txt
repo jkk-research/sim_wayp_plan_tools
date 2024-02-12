@@ -59,6 +59,7 @@ endif()
 install(DIRECTORY 
   launch
   rviz
+  csv
   DESTINATION share/${PROJECT_NAME})
 install(TARGETS
   pose_arr_to_tf
