@@ -39,6 +39,9 @@ add_executable(pose_arr_to_tf src/pose_arr_to_tf.cpp)
 ament_target_dependencies(pose_arr_to_tf  ${ament_dependencies} )
 add_executable(visuals src/visuals.cpp)
 ament_target_dependencies(visuals  ${ament_dependencies} )
+add_executable(csv_saver src/csv_saver.cpp)
+ament_target_dependencies(csv_saver  ${ament_dependencies} )
+
 
 # uncomment the following section in order to fill in
 # further dependencies manually.
@@ -64,5 +67,6 @@ install(DIRECTORY
 install(TARGETS
   pose_arr_to_tf
   visuals
+  csv_saver
   DESTINATION lib/${PROJECT_NAME})
 ament_package()
