@@ -19,7 +19,7 @@ def generate_launch_description():
             parameters=[
                 #{"file_dir": "/mnt/bag/waypoints/"},
                 {"file_dir": pkg_dir + "/csv"},
-                {"file_name": "sim_waypoints1.csv"},
+                {"file_name": "sim_waypoints3.csv"},
             ],
         )
     ])

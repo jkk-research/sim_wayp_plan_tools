@@ -47,7 +47,10 @@ def recalc_yaw(points):
         angle = np.arctan2(dy, dx) 
         points[i, 3] = angle
         points[i, 2] = 0.0
-        points[i, 4] = 4.8 - np.abs(prev_angle - angle) * 2 
+        speed = 4.8 - np.abs(prev_angle - angle) * 2
+        if speed < 0.5:
+            speed = 0.5
+        points[i, 4] = speed
         points[i, 5] = 0
         prev_angle = angle
         # print(f"Index: {i}, Point: {point}")
@@ -63,6 +66,8 @@ if __name__ == '__main__':
     points = points[::4, :]
     points = scale_points(points, 10.0)
     points = rotate_points(points, -0.85 + np.pi/2*3)
+    # points[:, 0] = points[:, 0] * -1.0
+    # points[:, 1] = points[:, 1] + 2.0
     points = recalc_yaw(points)
     plt.plot(points[:, 0], points[:, 1], 'r.-', label='xy', alpha=0.1, linewidth=4.2)
     plt.quiver(points[:, 0], points[:, 1], np.cos(points[:, 3]), np.sin(points[:, 3]), angles='xy', scale_units='xy', scale=2.2, alpha=0.4)
@@ -74,7 +79,7 @@ if __name__ == '__main__':
     plt.grid()
     plt.show()
     # save points
-    # file_saved = 'csv/sim_waypoints2.csv'
+    # file_saved = 'csv/sim_waypoints3.csv'
     # f=open(file_saved,'a')
     # np.savetxt(f, np.array(['x', 'y', 'z', 'yaw', 'mps', 'change_flag']), newline=",", fmt="%s")
     # f.write("\n")
