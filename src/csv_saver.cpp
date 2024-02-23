@@ -5,6 +5,7 @@
 #include "rclcpp/rclcpp.hpp"
 #include "nav_msgs/msg/path.hpp"
 #include "geometry_msgs/msg/twist.hpp"
+#include "std_msgs/msg/float32_multi_array.hpp"
 #include "visualization_msgs/msg/marker.hpp"
 #include "tf2/LinearMath/Quaternion.h"
 #include "tf2/LinearMath/Matrix3x3.h"
@@ -13,6 +14,7 @@
 #include "tf2_geometry_msgs/tf2_geometry_msgs.hpp"
 #include "tf2/convert.h"
 #include <fstream>
+#include "wayp_plan_tools/common.hpp"
 
 using namespace std::chrono_literals;
 using std::placeholders::_1;
@@ -73,6 +75,7 @@ public:
         tf_buffer_ = std::make_unique<tf2_ros::Buffer>(this->get_clock());
         tf_listener_ = std::make_shared<tf2_ros::TransformListener>(*tf_buffer_);
         sub_twist_ = this->create_subscription<geometry_msgs::msg::Twist>("/model/vehicle_blue/cmd_vel", 10, std::bind(&CsvSave::vehicleTwistCallback, this, _1));
+        sub_metrics_ = this->create_subscription<std_msgs::msg::Float32MultiArray>("metrics_wayp", 10, std::bind(&CsvSave::MetricsCallback, this, _1));
         // Call loop function 20 Hz (50 milliseconds)
         timer_ = this->create_wall_timer(std::chrono::milliseconds(50), std::bind(&CsvSave::loop, this));
         callback_handle_ = this->add_on_set_parameters_callback(std::bind(&CsvSave::parametersCallback, this, std::placeholders::_1));
@@ -120,6 +123,9 @@ private:
             RCLCPP_INFO_STREAM(this->get_logger(), "CSV xy path: " << file_path_xy);
             start_time = this->now();
             first_run = false;
+            std::ofstream file;
+            file.open(file_path_xy, std::ios_base::app);
+            file << "x,y,time,steering_angle,speed_mps,cur_lat_dist_abs,trg_way_lon_dist" << "\n";
         }
         vehiclePoseFromTransform();
         geometry_msgs::msg::PoseStamped pose;
@@ -130,23 +136,52 @@ private:
             std::ofstream file;
             file.open(file_path_xy, std::ios_base::app);
             double actual_time = (this->now() - start_time).seconds();
-            file << std::fixed << std::setprecision(3) << actual_time << "," << actual_pose.pose.position.x << "," << actual_pose.pose.position.y << "," << steering_angle << "," << vehicle_speed_mps << "\n";
+            file << std::fixed << std::setprecision(4) << actual_pose.pose.position.x << "," << actual_pose.pose.position.y << "," << actual_time << "," << steering_angle << "," << vehicle_speed_mps << "," << cur_lat_dist_abs << "," << trg_way_lon_dist << "\n";
             // RCLCPP_INFO_STREAM(this->get_logger(), "XY:" << actual_pose.pose.position.x << "," << actual_pose.pose.position.y);
         }
 
         loop_increment += 1;
     }
+
+    void MetricsCallback(const std_msgs::msg::Float32MultiArray &msg)
+    {
+        current_waypoint_id = msg.data[common_wpt::CUR_WAYPOINT_ID];
+        cur_lat_dist_abs = msg.data[common_wpt::CUR_LAT_DIST_ABS];
+        trg_way_lon_dist = msg.data[common_wpt::TRG_WAY_LON_DIST];
+        // RCLCPP_INFO_STREAM(this->get_logger(), "Max lateral distance: " << std::setprecision(2) << msg.data[common_wpt::MAX_LAT_DISTANCE] << " m");
+        // RCLCPP_INFO_STREAM(this->get_logger(), "Avg lateral distance: " << std::setprecision(2) << msg.data[common_wpt::AVG_LAT_DISTANCE] << " m");
+        // RCLCPP_INFO_STREAM(this->get_logger(), "Metrics callback || waypoint ID: " << current_waypoint_id << " - prev wayp ID: " << previous_waypoint_id);
+        if (previous_waypoint_id > current_waypoint_id and previous_waypoint_id != -1)
+        {
+            last_waypoint_reached_time = this->now();
+            RCLCPP_INFO_STREAM(this->get_logger(), "Last waypoint reached");
+        }
+        if ((last_waypoint_reached_time - this->now()).nanoseconds() / -1e9 > 15.0)
+        {
+            RCLCPP_INFO_STREAM(this->get_logger(), "Loop finished more than 15s ago, Finished CSV saving  || waypoint ID: " << current_waypoint_id << " - prev wayp ID: " << previous_waypoint_id);
+            RCLCPP_INFO_STREAM(this->get_logger(), "CSV metrics path: " << file_path_metrics);
+            std::ofstream file_m;
+            file_m.open(file_path_metrics, std::ios_base::app);
+            file_m << std::fixed << std::setprecision(4) << "MAX_LAT_DISTANCE," << msg.data[common_wpt::MAX_LAT_DISTANCE] << "\n";
+            file_m << std::fixed << std::setprecision(4) << "AVG_LAT_DISTANCE," << msg.data[common_wpt::AVG_LAT_DISTANCE] << "\n";
+            rclcpp::shutdown();
+        }
+        previous_waypoint_id = current_waypoint_id;
+    }
+
     rclcpp::TimerBase::SharedPtr timer_;
     rclcpp::Subscription<geometry_msgs::msg::Twist>::SharedPtr sub_twist_;
+    rclcpp::Subscription<std_msgs::msg::Float32MultiArray>::SharedPtr sub_metrics_;
     OnSetParametersCallbackHandle::SharedPtr callback_handle_;
     std::string pose_topic, metrics_topic, path_topic, pose_frame, file_name, file_dir, file_path_xy, file_path_metrics;
-    double steering_angle, vehicle_speed_mps;
+    double steering_angle, vehicle_speed_mps, trg_way_lon_dist = 0.0, cur_lat_dist_abs = 0.0;
     bool first_run = true;
     geometry_msgs::msg::PoseStamped actual_pose;
     rclcpp::Time start_time;
     std::unique_ptr<tf2_ros::Buffer> tf_buffer_;
     std::shared_ptr<tf2_ros::TransformListener> tf_listener_{nullptr};
-    int loop_increment = 0, mod_limit = 20;
+    int loop_increment = 0, mod_limit = 20, previous_waypoint_id = -1, current_waypoint_id = 0;
+    rclcpp::Time last_waypoint_reached_time = this->now() + rclcpp::Duration(36000, 0); // init with 10h in the future
 };
 
 int main(int argc, char **argv)

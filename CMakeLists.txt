@@ -15,6 +15,7 @@ find_package(tf2 REQUIRED)
 find_package(tf2_msgs REQUIRED)
 find_package(tf2_ros REQUIRED)
 find_package(tf2_geometry_msgs REQUIRED)
+find_package(wayp_plan_tools REQUIRED)
 
 # uncomment the following section in order to fill in
 # further dependencies manually.
@@ -29,11 +30,17 @@ set(ament_dependencies
   tf2_msgs
   tf2_ros
   tf2_geometry_msgs  
+  wayp_plan_tools
 )
 
 include_directories(
-  include
+  # include
+  # share/${wayp_plan_tools}
+  # ${wayp_plan_tools_INCLUDE_DIRS}
+  ../wayp_plan_tools/include # TODO: this solution only works for the current project structure
 )
+# ament_export_include_directories(include) 
+# ament_export_dependencies(${ament_dependencies})
 
 add_executable(pose_arr_to_tf src/pose_arr_to_tf.cpp)
 ament_target_dependencies(pose_arr_to_tf  ${ament_dependencies} )
@@ -68,5 +75,6 @@ install(TARGETS
   pose_arr_to_tf
   visuals
   csv_saver
-  DESTINATION lib/${PROJECT_NAME})
+  DESTINATION lib/${PROJECT_NAME}
+)
 ament_package()

@@ -1,0 +1,4 @@
+MAX_LAT_DISTANCE,9.8051
+AVG_LAT_DISTANCE,0.7500
+lookahead_min,2.5
+lookahead_max,6.5

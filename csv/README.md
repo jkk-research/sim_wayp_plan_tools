@@ -12,3 +12,8 @@ A [Hungaroring](https://en.wikipedia.org/wiki/Hungaroring) inspired track.
 # `sim_waypoints3.csv`
 
 ![](../img/sim_waypoints3.svg)
+
+
+# Evaluation example
+
+![](../img/csv_eval01.svg)
